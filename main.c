@@ -1,53 +1,9 @@
 #include "meta_handling.h"
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
 
-
-void clear_buffer();
-
-enum device_id {
-    nvme,
-    sd,
-};
 
 
 int main() {
-    enum device_id device;
-
-    while (1) {
-        printf("fex> ");
-
-        char *menu_input;
-        size_t input_length = 5;
-
-        getline(&menu_input, &input_length, stdin);
-        // fgets(menu_input, 5, stdin);
-        clear_buffer();
-
-        menu_input[strcspn(menu_input, "\n")] = '\0';
-
-        if (!strcmp(menu_input, "help")) {
-            printf(
-                "Enter your device identifier.\n"
-                "Supported identifiers:\n"
-                "nvme - NVMe devices\n"
-                "sd - SCSI, SATA, USB etc. devices\n"
-            );
-        }
-        else if (!strcmp(menu_input, "nvme")) {
-            device = nvme;
-            break;
-        }
-        else if (!strcmp(menu_input, "sd")) {
-            device = sd;
-            break;
-        }
-        else {
-            printf("Unknown device = \"%s\"", menu_input);
-        }
-    }
-
+    enum device_id device = menu_get_device_id();
 
     char nvme_path[] = "/dev/nvme0n1p1";
     nvme_path[13] = '9';
@@ -73,7 +29,3 @@ int main() {
     return 0;
 }
 
-void clear_buffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
-}
